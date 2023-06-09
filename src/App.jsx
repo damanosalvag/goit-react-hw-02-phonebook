@@ -1,8 +1,10 @@
-import React, { Component } from "react";
-import AddForm from "./components/AddForm/AddForm";
+import React, { Component } from 'react'
+import ContactForm from './components/ContactForm/ContactForm'
+import Filter from './components/Filter/Filter'
+import ContactList from './components/ContactList/ContactList'
 import PropTypes from "prop-types";
 import { nanoid } from "nanoid";
-import "./App.css";
+import './App.css'
 
 class App extends Component {
   constructor(props) {
@@ -17,7 +19,11 @@ class App extends Component {
       filter: "",
     };
   }
-  contactList = (name, number) => {
+  handleChange = (evt) => {
+    const { name, value } = evt.target;
+    this.setState({ [name]: value });
+  };
+  handleAddContact = (name, number) => {
     this.setState((prevState) => ({
       contacts: [
         ...prevState.contacts,
@@ -26,34 +32,51 @@ class App extends Component {
     }));
   };
 
-  handleChange = (evt) => {
-    const { name, value } = evt.target;
-    this.setState({ [name]: value });
+  handleDeleteContact = (id) => {
+    this.setState((prevState) => ({
+      contacts: prevState.contacts.filter((contact) => contact.id !== id),
+    }));
   };
 
   render() {
-    const { contacts, filter } = this.state;
+    const tempContacts = this.state.contacts.slice();
+    const filteredNames = tempContacts.filter((contact) =>
+      contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
+    );
     return (
-      <>
+      <div>
         <h1>Phonebook</h1>
-        <div className="container-main">
-          <AddForm
-            contactList={this.contactList}
-            filter={filter}
-            contacts={contacts}
-            handleChange={this.handleChange}
-          ></AddForm>
-        </div>
-      </>
+        <ContactForm
+          contactList={this.handleAddContact}
+          contacts={this.state.contacts}
+        />
+        <h2 className='contactListTitle'>Contacts</h2>
+        <Filter filter={this.state.filter} handleChange={this.handleChange} />
+        <ContactList filteredNames={filteredNames} onDelete={this.handleDeleteContact} />
+      </div>
     );
   }
 }
 
 App.propTypes = {
-  contacts: PropTypes.array.isRequired,
-  filter: PropTypes.string.isRequired,
-  contactList: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      number: PropTypes.string,
+    })
+  ),
+  filter: PropTypes.string,
+  handleChange: PropTypes.func,
+  handleAddContact: PropTypes.func,
+  handleDeleteContact: PropTypes.func,
+  filteredNames: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      number: PropTypes.string,
+    })
+  ),
 };
 
-export default App;
+export default App
