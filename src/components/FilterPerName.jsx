@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import ElementContactList from "./ElementContactList";
+import PropTypes from "prop-types";
+import ElementContactList from "./ElementContactList/ElementContactList";
+import "../App.css";
 
 class FilterPername extends Component {
     render() {
@@ -8,8 +10,8 @@ class FilterPername extends Component {
             contact.name.toLowerCase().includes(filter.toLowerCase())
         );
         return (
-          <>
-            <label>
+          <div>
+            <label className="display">
               Find contacts by name
               <input
                 type="text"
@@ -19,10 +21,18 @@ class FilterPername extends Component {
                 value={filter}
               ></input>
             </label>
-            <ElementContactList filteredNames={filteredNames}></ElementContactList>
-          </>
+            <ElementContactList
+              filteredNames={filteredNames}
+            ></ElementContactList>
+          </div>
         );
     }
 }
+
+FilterPername.propTypes = {
+  filter: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  filteredNames: PropTypes.array.isRequired,
+};
 
 export default FilterPername;

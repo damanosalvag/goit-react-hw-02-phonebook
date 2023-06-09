@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import AddForm from "./components/AddForm";
+import AddForm from "./components/AddForm/AddForm";
+import PropTypes from "prop-types";
 import { nanoid } from "nanoid";
 import "./App.css";
 
@@ -35,16 +36,24 @@ class App extends Component {
     return (
       <>
         <h1>Phonebook</h1>
-        <AddForm
-          contactList={this.contactList}
-          filter={filter}
-          contacts={contacts}
-          handleChange={this.handleChange}
-        >
-        </AddForm>
+        <div className="container-main">
+          <AddForm
+            contactList={this.contactList}
+            filter={filter}
+            contacts={contacts}
+            handleChange={this.handleChange}
+          ></AddForm>
+        </div>
       </>
     );
   }
 }
+
+App.propTypes = {
+  contacts: PropTypes.array.isRequired,
+  filter: PropTypes.string.isRequired,
+  contactList: PropTypes.func.isRequired,
+  handleChange: PropTypes.func.isRequired,
+};
 
 export default App;
